@@ -31,7 +31,7 @@ export default function HoppyCupLandingPage() {
             loop
             playsInline
             controls={false}
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain bg-[#082B16]"
           >
             <source src="/hoppy-cup-animation.webm" type="video/webm" />
             <source src="/hoppy-cup-animation.mp4" type="video/mp4" />
