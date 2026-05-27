@@ -1,65 +1,120 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React from "react";
+
+export default function HoppyCupLandingPage() {
+  
+
+  const menu = [
+    "welcome drink",
+    "coffee!",
+    "something something matcha",
+    "miso thirsty",
+    "green? blue???",
+    "round and chewy",
+    "farewell drink",
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="min-h-screen bg-[#082B16] text-[#F4F1E8] overflow-x-hidden selection:bg-[#F4F1E8] selection:text-[#082B16]">
+      
+
+      {/* HERO */}
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center">
+        <div className="w-[58vw] max-w-[280px] md:w-[20vw] md:max-w-[340px] flex items-center justify-center">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            controls={false}
+            className="w-full h-auto object-contain"
+            poster="https://placehold.co/600x600/082B16/F4F1E8?text=the+hoppy+cup"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <source
+              src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+              type="video/mp4"
             />
-            Deploy Now
-          </a>
+          </video>
+        </div>
+
+        <h1 className="mt-6 font-serif text-2xl md:text-3xl lowercase tracking-tight">
+          the hoppy cup
+        </h1>
+      </section>
+
+      {/* DETAILS */}
+      <section className="px-6 py-24 text-center border-t border-[#F4F1E8]/10">
+        <div className="max-w-sm mx-auto font-serif lowercase">
+          <div className="flex flex-col items-center">
+            <p className="text-5xl md:text-7xl leading-tight tracking-tight">
+              june 21
+            </p>
+
+            <a
+              href="https://maps.google.com/?q=Paper+Son+Coffee+303+2nd+St+N102+San+Francisco+CA+94107"
+              target="_blank"
+              rel="noreferrer"
+              className="group mt-14 inline-flex flex-col items-center transition-opacity duration-300 hover:opacity-70"
+            >
+              <p className="text-sm md:text-base opacity-55 leading-relaxed">
+                paper son coffee
+                <br />
+                303 2nd st n102
+                <br />
+                san francisco
+              </p>
+            </a>
+          </div>
+
           <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+            href="https://partiful.com/e/IovGicSSM1YrbLYAF9uS?"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noreferrer"
+            className="inline-block mt-12 text-lg md:text-xl underline underline-offset-4 transition-opacity duration-300 hover:opacity-60"
           >
-            Documentation
+            you&apos;re invited — RSVP
           </a>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="px-6 py-28 border-t border-[#F4F1E8]/10">
+        <div className="max-w-[320px] mx-auto bg-[#F4F1E8] text-[#082B16] px-6 py-8 shadow-2xl rotate-[-1deg]">
+          <div className="text-center font-mono text-xs uppercase tracking-[0.25em] border-b border-dashed border-[#082B16]/30 pb-4">
+            the hoppy cup
+          </div>
+
+          <div className="mt-5 text-center font-mono text-[11px] leading-relaxed opacity-70">
+            come back anytime
+            <br />
+            we&apos;re still working on it
+          </div>
+
+          <div className="mt-8 space-y-4 font-mono text-sm lowercase">
+            {menu.map((item, index) => (
+              <div
+                key={item}
+                className="flex items-start justify-between gap-4 border-b border-dotted border-[#082B16]/20 pb-2"
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span className="text-right">{item}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 border-t border-dashed border-[#082B16]/30 pt-4 text-center font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+            june 21 · san francisco
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-24 text-center">
+        <p className="font-serif lowercase text-sm md:text-base opacity-50">
+          by stone and john
+        </p>
+      </section>
+    </main>
   );
 }
+
+
