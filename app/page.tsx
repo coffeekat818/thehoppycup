@@ -24,14 +24,14 @@ export default function HoppyCupLandingPage() {
 
       {/* HERO */}
       <section className="min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center">
-        <div className="w-[58vw] max-w-[280px] md:w-[20vw] md:max-w-[340px] flex items-center justify-center">
+        <div className="w-[58vw] max-w-[280px] md:w-[20vw] md:max-w-[340px] h-[220px] md:h-[300px] overflow-hidden flex items-center justify-center">
           <video
             autoPlay
             muted
             loop
             playsInline
             controls={false}
-            className="w-full h-auto object-contain"
+            className="w-full h-full object-cover scale-[1.08]"
           >
             <source src="/hoppy-cup-animation.webm" type="video/webm" />
             <source src="/hoppy-cup-animation.mp4" type="video/mp4" />
