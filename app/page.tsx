@@ -1,7 +1,7 @@
+"use client";
+
 // created by John Hong
 // May 27, 2026
-
-"use client";
 
 import React from "react";
 
@@ -32,12 +32,9 @@ export default function HoppyCupLandingPage() {
             playsInline
             controls={false}
             className="w-full h-auto object-contain"
-            poster="https://placehold.co/600x600/082B16/F4F1E8?text=the+hoppy+cup"
           >
-            <source
-              src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
-              type="video/mp4"
-            />
+            <source src="/hoppy-cup-animation.webm" type="video/webm" />
+            <source src="/hoppy-cup-animation.mp4" type="video/mp4" />
           </video>
         </div>
 
