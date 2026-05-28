@@ -84,34 +84,10 @@ function LoopingVideo({
     const video = videoRef.current;
     if (!video) return;
 
-    const ensurePlaying = () => {
-      if (document.visibilityState !== "visible") return;
-
-      if (video.error || video.readyState === HTMLMediaElement.HAVE_NOTHING) {
-        video.load();
-        return;
-      }
-
-      if (
-        video.ended ||
-        (video.duration &&
-          Number.isFinite(video.duration) &&
-          video.currentTime >= video.duration - 0.05)
-      ) {
-        video.currentTime = 0.001;
-      }
-
-      if (video.paused) {
-        void video.play().catch(() => {
-          video.load();
-          void video.play().catch(() => {});
-        });
-      }
-    };
-
     const loopCleanly = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return;
 
+      // Restart just before the last frame to avoid the native loop flash.
       if (video.duration - video.currentTime <= 0.06) {
         video.currentTime = 0.001;
       }
@@ -122,35 +98,30 @@ function LoopingVideo({
       void video.play().catch(() => {});
     };
 
+    const resumePlayback = () => {
+      if (document.visibilityState === "visible") {
+        void video.play().catch(() => {});
+      }
+    };
+
+    const startPlayback = () => {
+      void video.play().catch(() => {});
+    };
+
     video.addEventListener("timeupdate", loopCleanly);
     video.addEventListener("ended", restartFromStart);
-    video.addEventListener("canplay", ensurePlaying);
-    video.addEventListener("stalled", ensurePlaying);
-    video.addEventListener("waiting", ensurePlaying);
-    document.addEventListener("visibilitychange", ensurePlaying);
-    window.addEventListener("pageshow", ensurePlaying);
-    window.addEventListener("focus", ensurePlaying);
+    video.addEventListener("canplay", startPlayback);
+    document.addEventListener("visibilitychange", resumePlayback);
 
-    const visibilityObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) ensurePlaying();
-      },
-      { threshold: 0.2 }
-    );
-    visibilityObserver.observe(video);
-
-    ensurePlaying();
+    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      startPlayback();
+    }
 
     return () => {
       video.removeEventListener("timeupdate", loopCleanly);
       video.removeEventListener("ended", restartFromStart);
-      video.removeEventListener("canplay", ensurePlaying);
-      video.removeEventListener("stalled", ensurePlaying);
-      video.removeEventListener("waiting", ensurePlaying);
-      document.removeEventListener("visibilitychange", ensurePlaying);
-      window.removeEventListener("pageshow", ensurePlaying);
-      window.removeEventListener("focus", ensurePlaying);
-      visibilityObserver.disconnect();
+      video.removeEventListener("canplay", startPlayback);
+      document.removeEventListener("visibilitychange", resumePlayback);
     };
   }, []);
 
@@ -159,7 +130,6 @@ function LoopingVideo({
       ref={videoRef}
       autoPlay
       muted
-      loop
       playsInline
       preload="auto"
       controls={false}
