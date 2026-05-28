@@ -22,8 +22,11 @@ function ScrollHint({
     <button
       type="button"
       aria-label={ariaLabel}
-      onClick={onClick}
-      className={`absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 transition-opacity duration-500 ${
+      onClick={(e) => {
+        e.currentTarget.blur();
+        onClick();
+      }}
+      className={`absolute bottom-8 left-1/2 flex -translate-x-1/2 touch-manipulation flex-col items-center gap-2 transition-opacity duration-500 ${
         visible
           ? "pointer-events-auto opacity-40 hover:opacity-65"
           : "pointer-events-none opacity-0"
@@ -54,6 +57,7 @@ function ScrollHint({
 
 export default function HoppyCupLandingPage() {
   const sectionsRef = useRef<(HTMLElement | null)[]>([]);
+  const isNavigatingRef = useRef(false);
   const [activeSection, setActiveSection] = useState(0);
 
   const menu = [
@@ -72,7 +76,9 @@ export default function HoppyCupLandingPage() {
 
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(index);
+          if (entry.isIntersecting && !isNavigatingRef.current) {
+            setActiveSection(index);
+          }
         },
         { threshold: 0.55 }
       );
@@ -85,7 +91,17 @@ export default function HoppyCupLandingPage() {
   }, []);
 
   const scrollToSection = (index: number) => {
-    sectionsRef.current[index]?.scrollIntoView({ behavior: "smooth" });
+    const section = sectionsRef.current[index];
+    if (!section) return;
+
+    isNavigatingRef.current = true;
+    setActiveSection(index);
+
+    section.scrollIntoView({ block: "start", behavior: "auto" });
+
+    window.setTimeout(() => {
+      isNavigatingRef.current = false;
+    }, 400);
   };
 
   return (
