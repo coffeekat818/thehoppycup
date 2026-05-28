@@ -56,6 +56,78 @@ function ScrollHint({
   );
 }
 
+function LoopingVideo({
+  className,
+  sources,
+}: {
+  className?: string;
+  sources: { src: string; type: string }[];
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const loopCleanly = () => {
+      if (!video.duration || !Number.isFinite(video.duration)) return;
+
+      // Restart just before the last frame to avoid the native loop flash.
+      if (video.duration - video.currentTime <= 0.06) {
+        video.currentTime = 0.001;
+      }
+    };
+
+    const restartFromStart = () => {
+      video.currentTime = 0.001;
+      void video.play().catch(() => {});
+    };
+
+    const resumePlayback = () => {
+      if (document.visibilityState === "visible") {
+        void video.play().catch(() => {});
+      }
+    };
+
+    const startPlayback = () => {
+      void video.play().catch(() => {});
+    };
+
+    video.addEventListener("timeupdate", loopCleanly);
+    video.addEventListener("ended", restartFromStart);
+    video.addEventListener("canplay", startPlayback);
+    document.addEventListener("visibilitychange", resumePlayback);
+
+    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      startPlayback();
+    }
+
+    return () => {
+      video.removeEventListener("timeupdate", loopCleanly);
+      video.removeEventListener("ended", restartFromStart);
+      video.removeEventListener("canplay", startPlayback);
+      document.removeEventListener("visibilitychange", resumePlayback);
+    };
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      autoPlay
+      muted
+      playsInline
+      preload="auto"
+      controls={false}
+      disablePictureInPicture
+      className={className}
+    >
+      {sources.map((source) => (
+        <source key={source.src} src={source.src} type={source.type} />
+      ))}
+    </video>
+  );
+}
+
 export default function HoppyCupLandingPage() {
   const mainRef = useRef<HTMLElement>(null);
   const sectionsRef = useRef<(HTMLElement | null)[]>([]);
@@ -162,28 +234,20 @@ export default function HoppyCupLandingPage() {
         className="relative flex h-[100svh] snap-start snap-always flex-col items-center justify-center px-6 text-center"
       >
         <div className="flex w-[160px] items-center justify-center md:w-[260px]">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            controls={false}
+          <LoopingVideo
             className="block h-auto w-full object-contain md:hidden"
-          >
-            <source src="/hoppy-cup-animation.mp4" type="video/mp4" />
-          </video>
+            sources={[
+              { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
+            ]}
+          />
 
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            controls={false}
+          <LoopingVideo
             className="hidden h-auto w-full object-contain md:block"
-          >
-            <source src="/hoppy-cup-animation.webm" type="video/webm" />
-            <source src="/hoppy-cup-animation.mp4" type="video/mp4" />
-          </video>
+            sources={[
+              { src: "/hoppy-cup-animation.webm", type: "video/webm" },
+              { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
+            ]}
+          />
         </div>
 
         <h1 className="mt-6 font-serif text-2xl lowercase tracking-tight md:text-3xl">
