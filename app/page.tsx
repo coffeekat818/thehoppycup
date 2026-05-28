@@ -374,7 +374,7 @@ export default function HoppyCupLandingPage() {
           </div>
         </div>
 
-        <p className="mt-8 font-serif text-xs lowercase opacity-50 sm:mt-12 sm:text-sm md:text-base">
+        <p className="mt-8 font-serif text-sm lowercase opacity-50 sm:mt-12 md:text-base">
           by stone and john
         </p>
       </section>
