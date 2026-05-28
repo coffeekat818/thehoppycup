@@ -3,7 +3,13 @@
 // created by John Hong
 // May 27, 2026
 
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 const SECTION_COUNT = 3;
 
@@ -21,6 +27,57 @@ const RSVP_SESSIONS = [
     href: "https://partiful.com/e/68QYQ3EGNmUhYtBHbFNJ?c=SAOBbKU1",
   },
 ] as const;
+
+function fadeInOnce(
+  el: HTMLElement,
+  duration: number,
+  onComplete?: () => void
+) {
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  if (reducedMotion) {
+    el.style.opacity = "1";
+    onComplete?.();
+    return;
+  }
+
+  const animation = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+    duration,
+    easing: "ease-out",
+    fill: "forwards",
+  });
+
+  void animation.finished.then(onComplete).catch(onComplete);
+
+  return () => animation.cancel();
+}
+
+function HeroIntroFade({
+  className = "",
+  children,
+  onComplete,
+}: {
+  className?: string;
+  children: React.ReactNode;
+  onComplete?: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    return fadeInOnce(el, 1000, onComplete);
+  }, [onComplete]);
+
+  return (
+    <div ref={ref} className={className} style={{ opacity: 0 }}>
+      {children}
+    </div>
+  );
+}
 
 function ScrollHint({
   caption,
@@ -158,6 +215,11 @@ export default function HoppyCupLandingPage() {
   const sectionsRef = useRef<(HTMLElement | null)[]>([]);
   const isNavigatingRef = useRef(false);
   const [activeSection, setActiveSection] = useState(0);
+  const [heroHintVisible, setHeroHintVisible] = useState(false);
+
+  const onHeroIntroComplete = useCallback(() => {
+    window.setTimeout(() => setHeroHintVisible(true), 300);
+  }, []);
 
   const menu = [
     "welcome drink",
@@ -286,30 +348,35 @@ export default function HoppyCupLandingPage() {
         }}
         className="relative flex h-[100svh] snap-start snap-always flex-col items-center justify-center px-6 text-center"
       >
-        <div className="flex w-[160px] items-center justify-center md:w-[260px]">
-          <LoopingVideo
-            className="block h-auto w-full object-contain md:hidden"
-            sources={[
-              { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
-            ]}
-          />
+        <HeroIntroFade
+          className="flex flex-col items-center"
+          onComplete={onHeroIntroComplete}
+        >
+          <div className="flex w-[160px] items-center justify-center md:w-[260px]">
+            <LoopingVideo
+              className="block h-auto w-full object-contain md:hidden"
+              sources={[
+                { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
+              ]}
+            />
 
-          <LoopingVideo
-            className="hidden h-auto w-full object-contain md:block"
-            sources={[
-              { src: "/hoppy-cup-animation.webm", type: "video/webm" },
-              { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
-            ]}
-          />
-        </div>
+            <LoopingVideo
+              className="hidden h-auto w-full object-contain md:block"
+              sources={[
+                { src: "/hoppy-cup-animation.webm", type: "video/webm" },
+                { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
+              ]}
+            />
+          </div>
 
-        <h1 className="mt-2 font-serif text-2xl lowercase tracking-tight md:mt-6 md:text-3xl">
-          the hoppy cup
-        </h1>
+          <h1 className="mt-2 font-serif text-2xl lowercase tracking-tight md:mt-6 md:text-3xl">
+            the hoppy cup
+          </h1>
+        </HeroIntroFade>
 
         <ScrollHint
           caption="hop to rsvp"
-          visible={activeSection === 0}
+          visible={activeSection === 0 && heroHintVisible}
           onClick={() => scrollToAdjacentSection(1)}
           ariaLabel="Hop to RSVP"
         />
@@ -390,47 +457,49 @@ export default function HoppyCupLandingPage() {
         }}
         className="flex h-[100svh] snap-start snap-always flex-col items-center justify-center px-4 py-4 sm:px-6 sm:py-8"
       >
-        <div className="w-full max-w-[288px] bg-[#F4F1E8] px-4 py-5 text-[#082B16] shadow-2xl sm:max-w-[320px] sm:rotate-[-1deg] sm:px-6 sm:py-8">
-          <div className="border-b border-dashed border-[#082B16]/30 pb-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] sm:pb-4 sm:text-xs sm:tracking-[0.25em]">
-            the hoppy cup
+        <div className="flex flex-col items-center">
+          <div className="w-full max-w-[288px] bg-[#F4F1E8] px-4 py-5 text-[#082B16] shadow-2xl sm:max-w-[320px] sm:rotate-[-1deg] sm:px-6 sm:py-8">
+            <div className="border-b border-dashed border-[#082B16]/30 pb-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] sm:pb-4 sm:text-xs sm:tracking-[0.25em]">
+              the hoppy cup
+            </div>
+
+            <div className="mt-3 text-center font-mono text-[10px] leading-relaxed opacity-70 sm:mt-5 sm:text-[11px]">
+              come back anytime
+              <br />
+              we&apos;re still working on it
+            </div>
+
+            <table className="mt-4 w-full table-fixed border-collapse sm:mt-8">
+              <colgroup>
+                <col className="w-7 sm:w-8" />
+                <col />
+              </colgroup>
+              <tbody>
+                {menu.map((item, index) => (
+                  <tr
+                    key={item}
+                    className="border-b border-dotted border-[#082B16]/20"
+                  >
+                    <td className="receipt-item-text py-1.5 pr-2 align-top text-[13px] tabular-nums sm:py-2 sm:text-sm">
+                      {String(index + 1).padStart(2, "0")}
+                    </td>
+                    <td className="receipt-item-text py-1.5 text-right text-[13px] leading-snug sm:py-2 sm:text-sm">
+                      {item}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="mt-4 border-t border-dashed border-[#082B16]/30 pt-3 text-center font-mono text-[9px] uppercase tracking-[0.18em] opacity-60 sm:mt-8 sm:pt-4 sm:text-[10px] sm:tracking-[0.2em]">
+              june 21 · san francisco
+            </div>
           </div>
 
-          <div className="mt-3 text-center font-mono text-[10px] leading-relaxed opacity-70 sm:mt-5 sm:text-[11px]">
-            come back anytime
-            <br />
-            we&apos;re still working on it
-          </div>
-
-          <table className="mt-4 w-full table-fixed border-collapse sm:mt-8">
-            <colgroup>
-              <col className="w-7 sm:w-8" />
-              <col />
-            </colgroup>
-            <tbody>
-              {menu.map((item, index) => (
-                <tr
-                  key={item}
-                  className="border-b border-dotted border-[#082B16]/20"
-                >
-                  <td className="receipt-item-text py-1.5 pr-2 align-top text-[13px] tabular-nums sm:py-2 sm:text-sm">
-                    {String(index + 1).padStart(2, "0")}
-                  </td>
-                  <td className="receipt-item-text py-1.5 text-right text-[13px] leading-snug sm:py-2 sm:text-sm">
-                    {item}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <div className="mt-4 border-t border-dashed border-[#082B16]/30 pt-3 text-center font-mono text-[9px] uppercase tracking-[0.18em] opacity-60 sm:mt-8 sm:pt-4 sm:text-[10px] sm:tracking-[0.2em]">
-            june 21 · san francisco
-          </div>
+          <p className="mt-8 font-serif text-sm lowercase opacity-50 sm:mt-12 md:text-base">
+            by stone and john
+          </p>
         </div>
-
-        <p className="mt-8 font-serif text-sm lowercase opacity-50 sm:mt-12 md:text-base">
-          by stone and john
-        </p>
       </section>
     </main>
   );
