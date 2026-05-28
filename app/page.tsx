@@ -327,10 +327,12 @@ export default function HoppyCupLandingPage() {
             june 21
           </p>
 
-          <div className="mt-12 w-full">
-            <p className="text-sm opacity-55 md:text-base">pick a session · 6 guests each</p>
+          <div className="mt-12 flex w-full flex-col items-center space-y-6">
+            <p className="text-sm opacity-55 md:text-base">
+              pick a session · 6 guests each
+            </p>
 
-            <ul className="mt-6 grid grid-cols-3 gap-3">
+            <ul className="grid w-full grid-cols-3 gap-3">
               {RSVP_SESSIONS.map((session) => (
                 <li key={session.time}>
                   <a
@@ -344,42 +346,34 @@ export default function HoppyCupLandingPage() {
                 </li>
               ))}
             </ul>
-          </div>
 
-          <a
-            href="https://maps.google.com/?q=Paper+Son+Coffee+303+2nd+St+N102+San+Francisco+CA+94107"
-            target="_blank"
-            rel="noreferrer"
-            className="group mt-10 inline-flex items-center gap-2 text-sm opacity-50 transition-opacity duration-300 hover:opacity-70 md:text-base"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-              className="shrink-0 opacity-80"
+            <a
+              href="https://maps.google.com/?q=Paper+Son+Coffee+303+2nd+St+N102+San+Francisco+CA+94107"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-2 text-sm opacity-50 transition-opacity duration-300 hover:opacity-70 md:text-base"
             >
-              <path
-                d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-            <span>paper son coffee @ fidi</span>
-          </a>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+                className="shrink-0 opacity-80"
+              >
+                <path
+                  d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+              <span>paper son coffee @ fidi</span>
+            </a>
+          </div>
         </div>
-
-        <ScrollHint
-          caption="hop to home"
-          visible={activeSection === 1}
-          onClick={() => scrollToAdjacentSection(-1)}
-          ariaLabel="Hop to home"
-          direction="up"
-        />
 
         <ScrollHint
           caption="hop to menu"
@@ -437,14 +431,6 @@ export default function HoppyCupLandingPage() {
         <p className="mt-8 font-serif text-sm lowercase opacity-50 sm:mt-12 md:text-base">
           by stone and john
         </p>
-
-        <ScrollHint
-          caption="hop to rsvp"
-          visible={activeSection === 2}
-          onClick={() => scrollToAdjacentSection(-1)}
-          ariaLabel="Hop to RSVP"
-          direction="up"
-        />
       </section>
     </main>
   );
