@@ -396,7 +396,7 @@ export default function HoppyCupLandingPage() {
             june 21
           </p>
 
-          <div className="mt-12 flex w-full flex-col items-center space-y-6">
+          <div className="mt-6 flex w-full flex-col items-center space-y-6">
             <p className="text-sm opacity-55 md:text-base">
               pick a session · 6 guests each
             </p>
