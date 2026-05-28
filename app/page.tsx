@@ -272,7 +272,7 @@ export default function HoppyCupLandingPage() {
           />
         </div>
 
-        <h1 className="mt-6 font-serif text-2xl lowercase tracking-tight md:text-3xl">
+        <h1 className="mt-2 font-serif text-2xl lowercase tracking-tight md:mt-6 md:text-3xl">
           the hoppy cup
         </h1>
 
