@@ -7,6 +7,22 @@ import React, { useEffect, useRef, useState } from "react";
 
 const SECTION_COUNT = 3;
 
+// Replace each href with its Partiful event link (set max 6 guests per event).
+const RSVP_SESSIONS = [
+  {
+    time: "9:00am",
+    href: "https://partiful.com/e/0e7arZwWKwRvJlbs36eB?c=GOjmPWWw",
+  },
+  {
+    time: "11:30am",
+    href: "https://partiful.com/e/w481cnlvAWSSjkEKj93I?c=c8UQZCtr",
+  },
+  {
+    time: "2:00pm",
+    href: "https://partiful.com/e/68QYQ3EGNmUhYtBHbFNJ?c=SAOBbKU1",
+  },
+] as const;
+
 function ScrollHint({
   caption,
   visible,
@@ -296,28 +312,55 @@ export default function HoppyCupLandingPage() {
             june 21
           </p>
 
+          <div className="mt-12 w-full">
+            <p className="text-sm opacity-55 md:text-base">pick a session · 6 guests each</p>
+
+            <ul className="mt-6 space-y-0">
+              {RSVP_SESSIONS.map((session) => (
+                <li
+                  key={session.time}
+                  className="border-b border-[#F4F1E8]/10 last:border-b-0"
+                >
+                  <a
+                    href={session.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group flex items-center justify-between py-4 transition-opacity duration-300 hover:opacity-70"
+                  >
+                    <span className="text-lg md:text-xl">{session.time}</span>
+                    <span className="text-sm underline underline-offset-4 md:text-base">
+                      rsvp
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           <a
             href="https://maps.google.com/?q=Paper+Son+Coffee+303+2nd+St+N102+San+Francisco+CA+94107"
             target="_blank"
             rel="noreferrer"
-            className="group mt-14 block text-center transition-opacity duration-300 hover:opacity-70"
+            className="group mt-10 inline-flex items-center gap-2 text-sm opacity-50 transition-opacity duration-300 hover:opacity-70 md:text-base"
           >
-            <span className="block text-sm leading-relaxed opacity-55 md:text-base">
-              paper son coffee
-              <br />
-              303 2nd st n102
-              <br />
-              san francisco
-            </span>
-          </a>
-
-          <a
-            href="https://partiful.com/e/IovGicSSM1YrbLYAF9uS?"
-            target="_blank"
-            rel="noreferrer"
-            className="mt-12 block text-center text-lg underline underline-offset-4 transition-opacity duration-300 hover:opacity-60 md:text-xl"
-          >
-            you&apos;re invited — RSVP
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+              className="shrink-0 opacity-80"
+            >
+              <path
+                d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+            <span>paper son coffee @ fidi</span>
           </a>
         </div>
 
