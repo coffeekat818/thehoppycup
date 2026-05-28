@@ -245,7 +245,7 @@ export default function HoppyCupLandingPage() {
     >
       <nav
         aria-label="Page sections"
-        className="fixed right-4 md:right-6 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-3"
+        className="fixed right-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-3 md:flex md:right-6"
       >
         {Array.from({ length: SECTION_COUNT }, (_, index) => (
           <button
