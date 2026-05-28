@@ -305,7 +305,7 @@ export default function HoppyCupLandingPage() {
         ref={(el) => {
           sectionsRef.current[1] = el;
         }}
-        className="relative flex h-[100svh] snap-start snap-always flex-col items-center justify-center px-6 text-center"
+        className="relative flex h-[100svh] snap-start snap-always flex-col items-center justify-center px-6 pr-12 text-center md:px-6"
       >
         <div className="mx-auto flex w-full max-w-sm flex-col items-center font-serif lowercase">
           <p className="text-5xl leading-tight tracking-tight md:text-7xl">
