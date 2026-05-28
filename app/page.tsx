@@ -478,11 +478,7 @@ export default function HoppyCupLandingPage() {
                 {menu.map((item, index) => (
                   <tr
                     key={item}
-                    className={
-                      index < menu.length - 1
-                        ? "border-b border-dotted border-[#082B16]/20"
-                        : undefined
-                    }
+                    className="border-b border-dotted border-[#082B16]/20"
                   >
                     <td className="receipt-item-text py-1.5 pr-2 align-top text-[13px] tabular-nums sm:py-2 sm:text-sm">
                       {String(index + 1).padStart(2, "0")}
