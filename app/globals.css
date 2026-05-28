@@ -33,7 +33,7 @@ body {
   overscroll-behavior: none;
 }
 
-@keyframes scroll-hint-bounce {
+@keyframes scroll-hint-bounce-down {
   0%,
   100% {
     transform: translateY(0);
@@ -43,8 +43,22 @@ body {
   }
 }
 
-.scroll-hint-bounce {
-  animation: scroll-hint-bounce 2s ease-in-out infinite;
+@keyframes scroll-hint-bounce-up {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.scroll-hint-bounce-down {
+  animation: scroll-hint-bounce-down 2s ease-in-out infinite;
+}
+
+.scroll-hint-bounce-up {
+  animation: scroll-hint-bounce-up 2s ease-in-out infinite;
 }
 
 .receipt-item-text {

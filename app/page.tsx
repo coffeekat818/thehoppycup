@@ -27,12 +27,16 @@ function ScrollHint({
   visible,
   onClick,
   ariaLabel,
+  direction = "down",
 }: {
   caption: string;
   visible: boolean;
   onClick: () => void;
   ariaLabel: string;
+  direction?: "up" | "down";
 }) {
+  const isUp = direction === "up";
+
   return (
     <button
       type="button"
@@ -42,7 +46,9 @@ function ScrollHint({
         e.currentTarget.blur();
         onClick();
       }}
-      className={`absolute bottom-8 left-1/2 flex -translate-x-1/2 touch-manipulation flex-col items-center gap-2 transition-opacity duration-500 ${
+      className={`absolute left-1/2 flex -translate-x-1/2 touch-manipulation flex-col items-center gap-2 transition-opacity duration-500 ${
+        isUp ? "top-8 flex-col-reverse" : "bottom-8"
+      } ${
         visible
           ? "pointer-events-auto opacity-40 hover:opacity-65"
           : "pointer-events-none opacity-0"
@@ -57,10 +63,14 @@ function ScrollHint({
         viewBox="0 0 20 20"
         fill="none"
         aria-hidden="true"
-        className="scroll-hint-bounce"
+        className={isUp ? "scroll-hint-bounce-up" : "scroll-hint-bounce-down"}
       >
         <path
-          d="M10 4v10M10 14l-4-4M10 14l4-4"
+          d={
+            isUp
+              ? "M10 16V6M10 6l-4 4M10 6l4 4"
+              : "M10 4v10M10 14l-4-4M10 14l4-4"
+          }
           stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
@@ -238,6 +248,12 @@ export default function HoppyCupLandingPage() {
     window.setTimeout(finishNavigation, prefersReducedMotion ? 100 : 900);
   };
 
+  const scrollToAdjacentSection = (delta: -1 | 1) => {
+    const nextIndex = activeSection + delta;
+    if (nextIndex < 0 || nextIndex >= SECTION_COUNT) return;
+    scrollToSection(nextIndex);
+  };
+
   return (
     <main
       ref={mainRef}
@@ -294,7 +310,7 @@ export default function HoppyCupLandingPage() {
         <ScrollHint
           caption="hop to rsvp"
           visible={activeSection === 0}
-          onClick={() => scrollToSection(1)}
+          onClick={() => scrollToAdjacentSection(1)}
           ariaLabel="Hop to RSVP"
         />
       </section>
@@ -358,9 +374,17 @@ export default function HoppyCupLandingPage() {
         </div>
 
         <ScrollHint
+          caption="hop to home"
+          visible={activeSection === 1}
+          onClick={() => scrollToAdjacentSection(-1)}
+          ariaLabel="Hop to home"
+          direction="up"
+        />
+
+        <ScrollHint
           caption="hop to menu"
           visible={activeSection === 1}
-          onClick={() => scrollToSection(2)}
+          onClick={() => scrollToAdjacentSection(1)}
           ariaLabel="Hop to menu"
         />
       </section>
@@ -413,6 +437,14 @@ export default function HoppyCupLandingPage() {
         <p className="mt-8 font-serif text-sm lowercase opacity-50 sm:mt-12 md:text-base">
           by stone and john
         </p>
+
+        <ScrollHint
+          caption="hop to rsvp"
+          visible={activeSection === 2}
+          onClick={() => scrollToAdjacentSection(-1)}
+          ariaLabel="Hop to RSVP"
+          direction="up"
+        />
       </section>
     </main>
   );
