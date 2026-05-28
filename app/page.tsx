@@ -22,7 +22,8 @@ function ScrollHint({
     <button
       type="button"
       aria-label={ariaLabel}
-      onClick={(e) => {
+      onPointerUp={(e) => {
+        e.preventDefault();
         e.currentTarget.blur();
         onClick();
       }}
@@ -56,6 +57,7 @@ function ScrollHint({
 }
 
 export default function HoppyCupLandingPage() {
+  const mainRef = useRef<HTMLElement>(null);
   const sectionsRef = useRef<(HTMLElement | null)[]>([]);
   const isNavigatingRef = useRef(false);
   const [activeSection, setActiveSection] = useState(0);
@@ -71,41 +73,67 @@ export default function HoppyCupLandingPage() {
   ];
 
   useEffect(() => {
-    const observers = sectionsRef.current.map((section, index) => {
-      if (!section) return null;
+    const main = mainRef.current;
+    if (!main) return;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && !isNavigatingRef.current) {
-            setActiveSection(index);
-          }
-        },
-        { threshold: 0.55 }
-      );
+    const updateActiveSection = () => {
+      if (isNavigatingRef.current) return;
 
-      observer.observe(section);
-      return observer;
-    });
+      const midpoint = main.scrollTop + main.clientHeight * 0.5;
+      let bestIndex = 0;
+      let bestDistance = Number.POSITIVE_INFINITY;
 
-    return () => observers.forEach((observer) => observer?.disconnect());
+      sectionsRef.current.forEach((section, index) => {
+        if (!section) return;
+
+        const sectionCenter = section.offsetTop + section.offsetHeight * 0.5;
+        const distance = Math.abs(midpoint - sectionCenter);
+
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestIndex = index;
+        }
+      });
+
+      setActiveSection(bestIndex);
+    };
+
+    main.addEventListener("scroll", updateActiveSection, { passive: true });
+    updateActiveSection();
+
+    return () => main.removeEventListener("scroll", updateActiveSection);
   }, []);
 
   const scrollToSection = (index: number) => {
+    const main = mainRef.current;
     const section = sectionsRef.current[index];
-    if (!section) return;
+    if (!main || !section || isNavigatingRef.current) return;
 
     isNavigatingRef.current = true;
-    setActiveSection(index);
 
-    section.scrollIntoView({ block: "start", behavior: "auto" });
+    main.scrollTo({
+      top: section.offsetTop,
+      left: 0,
+      behavior: "auto",
+    });
 
     window.setTimeout(() => {
       isNavigatingRef.current = false;
-    }, 400);
+
+      const midpoint = main.scrollTop + main.clientHeight * 0.5;
+      const sectionCenter = section.offsetTop + section.offsetHeight * 0.5;
+
+      if (Math.abs(midpoint - sectionCenter) < main.clientHeight * 0.25) {
+        setActiveSection(index);
+      }
+    }, 350);
   };
 
   return (
-    <main className="bg-[#082B16] text-[#F4F1E8] selection:bg-[#F4F1E8] selection:text-[#082B16]">
+    <main
+      ref={mainRef}
+      className="h-[100svh] snap-y snap-mandatory overflow-y-auto overscroll-y-contain bg-[#082B16] text-[#F4F1E8] selection:bg-[#F4F1E8] selection:text-[#082B16]"
+    >
       <nav
         aria-label="Page sections"
         className="fixed right-4 md:right-6 top-1/2 z-20 flex -translate-y-1/2 flex-col gap-3"

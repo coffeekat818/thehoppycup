@@ -25,12 +25,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-html {
-  scroll-snap-type: y mandatory;
-}
-
 html,
 body {
+  height: 100%;
+  overflow: hidden;
   background: #082B16;
   overscroll-behavior: none;
 }
