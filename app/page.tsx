@@ -353,15 +353,17 @@ export default function HoppyCupLandingPage() {
           onComplete={onHeroIntroComplete}
         >
           <div className="flex w-[160px] items-center justify-center md:w-[260px]">
+            {/* Touch devices: MP4 only (legacy mobile WebM support) */}
             <LoopingVideo
-              className="block h-auto w-full object-contain md:hidden"
+              className="block h-auto w-full object-contain [@media(pointer:fine)]:hidden"
               sources={[
                 { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
               ]}
             />
 
+            {/* Mouse/trackpad: WebM with alpha, MP4 fallback */}
             <LoopingVideo
-              className="hidden h-auto w-full object-contain md:block"
+              className="hidden h-auto w-full object-contain [@media(pointer:fine)]:block"
               sources={[
                 { src: "/hoppy-cup-animation.webm", type: "video/webm" },
                 { src: "/hoppy-cup-animation.mp4", type: "video/mp4" },
