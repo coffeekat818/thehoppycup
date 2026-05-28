@@ -24,7 +24,7 @@ export default function HoppyCupLandingPage() {
 
       {/* HERO */}
       <section className="min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center">
-        <div className="w-[260px] md:w-[360px] flex items-center justify-center">
+        <div className="w-[160px] md:w-[260px] flex items-center justify-center">
           {/* Mobile: force MP4 */}
           <video
             autoPlay
