@@ -478,7 +478,11 @@ export default function HoppyCupLandingPage() {
                 {menu.map((item, index) => (
                   <tr
                     key={item}
-                    className="border-b border-dotted border-[#082B16]/20"
+                    className={
+                      index < menu.length - 1
+                        ? "border-b border-dotted border-[#082B16]/20"
+                        : undefined
+                    }
                   >
                     <td className="receipt-item-text py-1.5 pr-2 align-top text-[13px] tabular-nums sm:py-2 sm:text-sm">
                       {String(index + 1).padStart(2, "0")}
@@ -491,7 +495,7 @@ export default function HoppyCupLandingPage() {
               </tbody>
             </table>
 
-            <div className="mt-4 border-t border-dashed border-[#082B16]/30 pt-3 text-center font-mono text-[9px] uppercase tracking-[0.18em] opacity-60 sm:mt-8 sm:pt-4 sm:text-[10px] sm:tracking-[0.2em]">
+            <div className="mt-4 text-center font-mono text-[9px] uppercase tracking-[0.18em] opacity-60 sm:mt-8 sm:text-[10px] sm:tracking-[0.2em]">
               june 21 · san francisco
             </div>
           </div>
