@@ -7,7 +7,6 @@ import React, { useEffect, useRef, useState } from "react";
 
 const SECTION_COUNT = 3;
 
-// Replace each href with its Partiful event link (set max 6 guests per event).
 const RSVP_SESSIONS = [
   {
     time: "9:00am",
@@ -85,10 +84,34 @@ function LoopingVideo({
     const video = videoRef.current;
     if (!video) return;
 
+    const ensurePlaying = () => {
+      if (document.visibilityState !== "visible") return;
+
+      if (video.error || video.readyState === HTMLMediaElement.HAVE_NOTHING) {
+        video.load();
+        return;
+      }
+
+      if (
+        video.ended ||
+        (video.duration &&
+          Number.isFinite(video.duration) &&
+          video.currentTime >= video.duration - 0.05)
+      ) {
+        video.currentTime = 0.001;
+      }
+
+      if (video.paused) {
+        void video.play().catch(() => {
+          video.load();
+          void video.play().catch(() => {});
+        });
+      }
+    };
+
     const loopCleanly = () => {
       if (!video.duration || !Number.isFinite(video.duration)) return;
 
-      // Restart just before the last frame to avoid the native loop flash.
       if (video.duration - video.currentTime <= 0.06) {
         video.currentTime = 0.001;
       }
@@ -99,30 +122,35 @@ function LoopingVideo({
       void video.play().catch(() => {});
     };
 
-    const resumePlayback = () => {
-      if (document.visibilityState === "visible") {
-        void video.play().catch(() => {});
-      }
-    };
-
-    const startPlayback = () => {
-      void video.play().catch(() => {});
-    };
-
     video.addEventListener("timeupdate", loopCleanly);
     video.addEventListener("ended", restartFromStart);
-    video.addEventListener("canplay", startPlayback);
-    document.addEventListener("visibilitychange", resumePlayback);
+    video.addEventListener("canplay", ensurePlaying);
+    video.addEventListener("stalled", ensurePlaying);
+    video.addEventListener("waiting", ensurePlaying);
+    document.addEventListener("visibilitychange", ensurePlaying);
+    window.addEventListener("pageshow", ensurePlaying);
+    window.addEventListener("focus", ensurePlaying);
 
-    if (video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
-      startPlayback();
-    }
+    const visibilityObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) ensurePlaying();
+      },
+      { threshold: 0.2 }
+    );
+    visibilityObserver.observe(video);
+
+    ensurePlaying();
 
     return () => {
       video.removeEventListener("timeupdate", loopCleanly);
       video.removeEventListener("ended", restartFromStart);
-      video.removeEventListener("canplay", startPlayback);
-      document.removeEventListener("visibilitychange", resumePlayback);
+      video.removeEventListener("canplay", ensurePlaying);
+      video.removeEventListener("stalled", ensurePlaying);
+      video.removeEventListener("waiting", ensurePlaying);
+      document.removeEventListener("visibilitychange", ensurePlaying);
+      window.removeEventListener("pageshow", ensurePlaying);
+      window.removeEventListener("focus", ensurePlaying);
+      visibilityObserver.disconnect();
     };
   }, []);
 
@@ -131,6 +159,7 @@ function LoopingVideo({
       ref={videoRef}
       autoPlay
       muted
+      loop
       playsInline
       preload="auto"
       controls={false}
@@ -305,7 +334,7 @@ export default function HoppyCupLandingPage() {
         ref={(el) => {
           sectionsRef.current[1] = el;
         }}
-        className="relative flex h-[100svh] snap-start snap-always flex-col items-center justify-center px-6 pr-12 text-center md:px-6"
+        className="relative flex h-[100svh] snap-start snap-always flex-col items-center justify-center px-6 text-center"
       >
         <div className="mx-auto flex w-full max-w-sm flex-col items-center font-serif lowercase">
           <p className="text-5xl leading-tight tracking-tight md:text-7xl">
@@ -315,22 +344,16 @@ export default function HoppyCupLandingPage() {
           <div className="mt-12 w-full">
             <p className="text-sm opacity-55 md:text-base">pick a session · 6 guests each</p>
 
-            <ul className="mt-6 space-y-0">
+            <ul className="mt-6 grid grid-cols-3 gap-3">
               {RSVP_SESSIONS.map((session) => (
-                <li
-                  key={session.time}
-                  className="border-b border-[#F4F1E8]/10 last:border-b-0"
-                >
+                <li key={session.time}>
                   <a
                     href={session.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="group flex items-center justify-between py-4 transition-opacity duration-300 hover:opacity-70"
+                    className="block border border-[#F4F1E8]/20 px-2 py-3 text-sm transition-all duration-300 hover:border-[#F4F1E8]/40 hover:opacity-80 md:py-4 md:text-lg"
                   >
-                    <span className="text-lg md:text-xl">{session.time}</span>
-                    <span className="text-sm underline underline-offset-4 md:text-base">
-                      rsvp
-                    </span>
+                    {session.time}
                   </a>
                 </li>
               ))}
