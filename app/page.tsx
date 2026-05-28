@@ -182,29 +182,51 @@ export default function HoppyCupLandingPage() {
     if (!main || !section || isNavigatingRef.current) return;
 
     isNavigatingRef.current = true;
+    let finished = false;
+
+    const finishNavigation = () => {
+      if (finished) return;
+      finished = true;
+
+      isNavigatingRef.current = false;
+
+      const midpoint = main.scrollTop + main.clientHeight * 0.5;
+      let bestIndex = 0;
+      let bestDistance = Number.POSITIVE_INFINITY;
+
+      sectionsRef.current.forEach((sec, i) => {
+        if (!sec) return;
+
+        const sectionCenter = sec.offsetTop + sec.offsetHeight * 0.5;
+        const distance = Math.abs(midpoint - sectionCenter);
+
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          bestIndex = i;
+        }
+      });
+
+      setActiveSection(bestIndex);
+    };
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     main.scrollTo({
       top: section.offsetTop,
       left: 0,
-      behavior: "auto",
+      behavior: prefersReducedMotion ? "auto" : "smooth",
     });
 
-    window.setTimeout(() => {
-      isNavigatingRef.current = false;
-
-      const midpoint = main.scrollTop + main.clientHeight * 0.5;
-      const sectionCenter = section.offsetTop + section.offsetHeight * 0.5;
-
-      if (Math.abs(midpoint - sectionCenter) < main.clientHeight * 0.25) {
-        setActiveSection(index);
-      }
-    }, 350);
+    main.addEventListener("scrollend", finishNavigation, { once: true });
+    window.setTimeout(finishNavigation, prefersReducedMotion ? 100 : 900);
   };
 
   return (
     <main
       ref={mainRef}
-      className="h-[100svh] snap-y snap-mandatory overflow-y-auto overscroll-y-contain bg-[#082B16] text-[#F4F1E8] selection:bg-[#F4F1E8] selection:text-[#082B16]"
+      className="h-[100svh] snap-y snap-mandatory scroll-smooth overflow-y-auto overscroll-y-contain bg-[#082B16] text-[#F4F1E8] selection:bg-[#F4F1E8] selection:text-[#082B16]"
     >
       <nav
         aria-label="Page sections"
