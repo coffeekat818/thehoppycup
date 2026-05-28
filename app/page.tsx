@@ -19,11 +19,11 @@ export default function HoppyCupLandingPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#082B16] text-[#F4F1E8] overflow-x-hidden selection:bg-[#F4F1E8] selection:text-[#082B16]">
+    <main className="min-h-[100svh] bg-[#082B16] text-[#F4F1E8] overflow-x-hidden selection:bg-[#F4F1E8] selection:text-[#082B16]">
       
 
       {/* HERO */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 py-20 text-center">
+      <section className="min-h-[100svh] flex flex-col items-center justify-center px-6 py-20 text-center">
         <div className="w-[160px] md:w-[260px] flex items-center justify-center">
           {/* Mobile: force MP4 */}
           <video
