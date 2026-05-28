@@ -54,6 +54,37 @@ function fadeInOnce(
   return () => animation.cancel();
 }
 
+function tapHaptic() {
+  if (typeof window === "undefined") return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (!window.matchMedia("(pointer: coarse)").matches) return;
+
+  try {
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    if (!isIOS && typeof navigator.vibrate === "function") {
+      navigator.vibrate(12);
+      return;
+    }
+
+    const label = document.createElement("label");
+    label.setAttribute("aria-hidden", "true");
+    label.style.cssText =
+      "display:none;position:fixed;opacity:0;pointer-events:none;";
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.setAttribute("switch", "");
+    label.appendChild(input);
+    document.head.appendChild(label);
+    label.click();
+    document.head.removeChild(label);
+  } catch {
+    // unsupported or blocked
+  }
+}
+
 function HeroIntroFade({
   className = "",
   children,
@@ -101,6 +132,7 @@ function ScrollHint({
       onPointerUp={(e) => {
         e.preventDefault();
         e.currentTarget.blur();
+        tapHaptic();
         onClick();
       }}
       className={`absolute left-1/2 z-10 flex -translate-x-1/2 touch-manipulation flex-col items-center justify-center gap-2 px-10 py-5 transition-opacity duration-500 ${
