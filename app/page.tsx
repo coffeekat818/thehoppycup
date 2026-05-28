@@ -46,15 +46,15 @@ function ScrollHint({
         e.currentTarget.blur();
         onClick();
       }}
-      className={`absolute left-1/2 flex -translate-x-1/2 touch-manipulation flex-col items-center gap-2 transition-opacity duration-500 ${
-        isUp ? "top-8 flex-col-reverse" : "bottom-8"
+      className={`absolute left-1/2 z-10 flex -translate-x-1/2 touch-manipulation flex-col items-center justify-center gap-2 px-10 py-5 transition-opacity duration-500 ${
+        isUp ? "top-6 flex-col-reverse" : "bottom-6"
       } ${
         visible
           ? "pointer-events-auto opacity-40 hover:opacity-65"
           : "pointer-events-none opacity-0"
       }`}
     >
-      <span className="font-serif text-xs lowercase tracking-wide md:text-sm">
+      <span className="pointer-events-none font-serif text-xs lowercase tracking-wide md:text-sm">
         {caption}
       </span>
       <svg
@@ -63,7 +63,7 @@ function ScrollHint({
         viewBox="0 0 20 20"
         fill="none"
         aria-hidden="true"
-        className={isUp ? "scroll-hint-bounce-up" : "scroll-hint-bounce-down"}
+        className={`pointer-events-none ${isUp ? "scroll-hint-bounce-up" : "scroll-hint-bounce-down"}`}
       >
         <path
           d={
