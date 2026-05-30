@@ -393,7 +393,7 @@ export default function HoppyCupLandingPage() {
       >
         <div className="mx-auto flex w-full max-w-sm flex-col items-center font-serif lowercase">
           <p className="text-5xl leading-tight tracking-tight md:text-7xl">
-            june 21
+            june 20
           </p>
 
           <div className="mt-6 flex w-full flex-col items-center space-y-6">
